@@ -1,2 +1,119 @@
-<h1>Willkommen im Spiele-Hub! 🎮</h1>
-<p>Hier entstehen bald deine Spiele.</p>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEFAN | Spiele-Hub 🎮</title>
+    <style>
+        body {
+            background-color: #0d0f12;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        /* Spiele-Raster */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+        }
+
+        /* Spiele-Karten */
+        .game-card {
+            background-color: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 25px;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .game-icon {
+            font-size: 2.5rem;
+        }
+
+        /* Zurück-Button */
+        .back-btn {
+            display: inline-block;
+            background-color: #334155;
+            color: #e2e8f0;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .back-btn:hover {
+            background-color: #475569;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Willkommen im Spiele-Hub! 🎮</h1>
+    <p class="subtitle">Wähle ein Spiel aus und zocke direkt im Browser.</p>
+
+    <!-- Hier sind all deine hochgeladenen Spiele verlinkt -->
+    <div class="games-grid">
+        <a href="/clicker" class="game-card">
+            <span class="game-icon">🖱️</span>
+            <span>Clicker Game</span>
+        </a>
+        <a href="/jump" class="game-card">
+            <span class="game-icon">🦘</span>
+            <span>Jump & Run</span>
+        </a>
+        <a href="/labyrinth" class="game-card">
+            <span class="game-icon">🌀</span>
+            <span>Labyrinth</span>
+        </a>
+        <a href="/racing" class="game-card">
+            <span class="game-icon">🏎️</span>
+            <span>Racing Game</span>
+        </a>
+        <a href="/shooter" class="game-card">
+            <span class="game-icon">🎯</span>
+            <span>Shooter</span>
+        </a>
+        <a href="/io" class="game-card">
+            <span class="game-icon">🌐</span>
+            <span>Agar.io Klon (.io)</span>
+        </a>
+    </div>
+
+    <br>
+    <a href="/" class="back-btn">⬅️ Zurück zur Startseite</a>
+
+</body>
+</html>
