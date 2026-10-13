@@ -8,8 +8,8 @@
         @import url('https://googleapis.com');
 
         body {
-            background-color: #060709;
-            color: #f3f4f6;
+            background-color: #0d0f12;
+            color: #e2e8f0;
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
             padding: 0 40px;
@@ -22,12 +22,11 @@
         /* Massive, breite Navbar */
         .navbar {
             width: 100%;
-            max-width: 1300px;
+            max-width: 1200px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 35px 0;
-            margin-bottom: 60px;
+            padding: 30px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
@@ -39,316 +38,105 @@
             text-decoration: none;
         }
 
-        .logo span {
-            color: #00d2ff;
-        }
-
         .nav-links {
             display: flex;
-            gap: 40px;
+            gap: 35px;
             align-items: center;
         }
 
         .nav-links a {
-            color: #9ca3af;
+            color: #94a3b8;
             text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: color 0.2s;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.2s ease, transform 0.2s ease;
         }
 
         .nav-links a:hover {
             color: #ffffff;
         }
 
-        /* Riesiger Hero-Bereich gegen die Leere */
-        .hero-container {
-            width: 100%;
-            max-width: 1300px;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 80px;
-            align-items: center;
-            margin-bottom: 100px;
-            padding: 40px 0;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0, 210, 255, 0.08);
-            color: #00d2ff;
-            border: 1px solid rgba(0, 210, 255, 0.2);
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .hero-text h1 {
-            font-size: 4.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin: 0 0 30px 0;
-            letter-spacing: -2.5px;
+        /* Highlight Button für den Spiele-Hub */
+        .nav-links a.hub-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
-        .hero-text h1 span {
-            background: linear-gradient(135deg, #00b4db, #00d2ff);
+        .nav-links a.hub-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Hauptinhalt */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            max-width: 800px;
+            margin-top: 60px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .hero-text p {
-            color: #9ca3af;
-            font-size: 1.4rem;
-            line-height: 1.7;
-            margin-bottom: 45px;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #00b4db, #00d2ff);
-            color: #08090c;
-            text-decoration: none;
-            padding: 18px 36px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 1.15rem;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0, 210, 255, 0.25);
-            transition: all 0.2s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 210, 255, 0.45);
-        }
-
-        /* Große, fette Discord-Kachel rechts im Bild */
-        .discord-box {
-            background: linear-gradient(145deg, #12141c, #0e1017);
-            border: 2px solid #1e2230;
-            border-radius: 40px;
-            padding: 50px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .discord-box::before {
-            content: '';
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            background: #00d2ff;
-            filter: blur(120px);
-            opacity: 0.15;
-            top: -50px;
-            right: -50px;
-        }
-
-        .discord-icon-large {
-            font-size: 5.5rem;
-            margin-bottom: 25px;
-            animation: pulse 3s infinite alternate;
-        }
-
-        .discord-box h3 {
-            font-size: 2rem;
-            margin: 0 0 10px 0;
-            font-weight: 800;
-        }
-
-        .discord-box p {
-            color: #9ca3af;
-            font-size: 1.1rem;
-            margin: 0 0 35px 0;
-            max-width: 320px;
-            line-height: 1.5;
-        }
-
-        .btn-discord-join {
-            width: 100%;
-            max-width: 300px;
-            background-color: #5865F2;
-            color: white;
-            text-decoration: none;
-            padding: 16px 0;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
-            transition: all 0.2s;
-        }
-
-        .btn-discord-join:hover {
-            background-color: #4752c4;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5);
-        }
-
-        /* Massive, breite Stats-Kacheln */
-        .stats-grid {
-            width: 100%;
-            max-width: 1300px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-            margin-bottom: 100px;
-        }
-
-        .stat-card {
-            background-color: #11131a;
-            border: 1px solid #1e2230;
-            border-radius: 24px;
-            padding: 40px 30px;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            border-color: rgba(0, 210, 255, 0.4);
-            transform: translateY(-4px);
-        }
-
-        .stat-number {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: #00d2ff;
-            margin-bottom: 10px;
-            letter-spacing: -2px;
-        }
-
-        .stat-label {
-            color: #9ca3af;
-            font-size: 1.1rem;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        /* Fettes Kontaktformular am Ende der Seite */
-        .contact-section {
-            width: 100%;
-            max-width: 750px;
-            background-color: #11131a;
-            border: 2px solid #1e2230;
-            border-radius: 32px;
-            padding: 50px;
-            margin-bottom: 100px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            box-sizing: border-box;
-        }
-
-        .contact-section h2 {
-            font-size: 2.2rem;
-            margin-top: 0;
-            margin-bottom: 12px;
-            color: #ffffff;
-            font-weight: 800;
-        }
-
-        .contact-section p {
-            color: #9ca3af;
+        .hero p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            line-height: 1.6;
             margin-bottom: 40px;
+        }
+
+        .cta-btn {
+            background-color: #ffffff;
+            color: #0d0f12;
+            padding: 16px 32px;
+            border-radius: 14px;
             font-size: 1.1rem;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .form-group label {
-            font-size: 1rem;
             font-weight: 700;
-            color: #9ca3af;
+            text-decoration: none;
+            transition: background-color 0.2s, transform 0.2s;
         }
 
-        .form-input {
-            background-color: #060709;
-            border: 1px solid #222530;
-            border-radius: 14px;
-            padding: 16px;
-            color: #ffffff;
-            font-family: inherit;
-            font-size: 1.1rem;
-            transition: border-color 0.2s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #00d2ff;
-        }
-
-        textarea.form-input {
-            resize: vertical;
-            min-height: 150px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00b4db, #00d2ff);
-            color: #08090c;
-            border: none;
-            padding: 18px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 1.15rem;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            margin-top: 15px;
-        }
-
-        .submit-btn:hover {
-            opacity: 0.9;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+        .cta-btn:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation -->
-    <div class="navbar">
-        <a href="/" class="logo">STEFAN<span>.dev</span></a>
+    <!-- Reparierte Navigation -->
+    <nav class="navbar">
+        <a href="/" class="logo">STEFAN</a>
         <div class="nav-links">
-            <a href="http://127.0.0.1:5001" target="_blank">Spiele-Hub 🎮</a>
-            <a href="#anfrage">Anfrage senden</a>
+            <a href="/">Home</a>
+            <a href="#">Über mich</a>
+            <a href="#">Projekte</a>
+            <a href="/spiele-hub" class="hub-btn">Spiele-Hub 🎮</a>
         </div>
-    </div>
+    </nav>
 
-    <!-- Main Hero Bereich -->
-    <div class="hero-container">
-        <div class="hero-text">
-            <div class="badge">🛡️ Community & Project Lead</div>
-            <h1>Gute Server brauchen Struktur. <span>Ich baue sie.</span></h1>
-            <p>Hey, ich bin Stefan. Ich konzipiere und verwalte professionelle Discord-Server, leite Gaming-Communities und sorge im Hintergrund dafür, dass die Systeme fehlerfrei laufen und der Workspace sicher bleibt.</p>
-            <div class="cta-buttons">
-                <a href="#anfrage" class="btn-primary">Projekt starten</a>
-            </div>
-        </div>
-        
-        <!-- Große Discord-Kachel statt leerem Logo -->
-        <div class="discord-box">
-            <div class="discord-icon-large">🌐</div>
-            <h3>Mein Netzwerk</h3>
-            <p>Komm direkt auf meinen Server, um dich mit mir und dem Team zu vernetzen.</p>
-            <!-- 🌐 TRAG HIER DEINEN DC-LINK EIN: Ersetze das '#' unten mit deinem echten Discord-Link -->
+    <!-- Hero Sektion -->
+    <main class="hero">
+        <h1>Game & Community Management</h1>
+        <p>Willkommen auf meiner offiziellen Website. Hier findest du Informationen über meine Arbeit, aktuelle Projekte und exklusive Mini-Games direkt im Web-Hub.</p>
+        <a href="/spiele-hub" class="cta-btn">Jetzt Spiele entdecken</a>
+    </main>
+
+</body>
+</html>
