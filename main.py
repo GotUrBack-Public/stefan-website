@@ -10,5 +10,29 @@ def home():
 def spiele_hub():
     return render_template('spiele-hub.html')
 
+@app.route('/clicker')
+def clicker():
+    return render_template('clicker.html')
+
+@app.route('/jump')
+def jump():
+    return render_template('jump.html')
+
+@app.route('/labyrinth')
+def labyrinth():
+    return render_template('labyrinth.html')
+
+@app.route('/racing')
+def racing():
+    return render_template('racing.html')
+
+@app.route('/shooter')
+def shooter():
+    return render_template('shooter.html')
+
+@app.route('/io')
+def io_game():
+    return render_template('io.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000, debug=True)
