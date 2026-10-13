@@ -1,16 +1,14 @@
-import os
 from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template('index.html')
 
-@app.route("/spiele-hub")
+@app.route('/spiele-hub')
 def spiele_hub():
-    return render_template("spiele-hub.htmll")
+    return render_template('spiele-hub.html')
 
-if __name__ == "__main__":
-    # Fest auf Port 10000 für Render gestellt
-    app.run(debug=True, host="0.0.0.0", port=10000)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000, debug=True)
