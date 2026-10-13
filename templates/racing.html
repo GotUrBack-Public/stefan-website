@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Retro 3D Racer</title>
+    <style>
+        body { margin: 0; background: #111; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        #gameContainer { position: relative; border: 4px solid #fff; box-shadow: 0 0 30px rgba(255,255,255,0.2); }
+        canvas { background: #000; display: block; }
+        .ui { position: absolute; top: 15px; font-size: 24px; font-family: monospace; font-weight: bold; color: #fff; text-shadow: 2px 2px #000; }
+        #timeBox { left: 20px; color: #ff3333; }
+        #scoreBox { right: 20px; color: #33ff33; }
+        #speedBox { left: 50%; transform: translateX(-50%); color: #ffff33; }
+    </style>
+</head>
+<body>
+
+    <h1 style="margin:5px;">TURBO RACER 🏎️💨</h1>
+    <div id="gameContainer">
+        <div id="timeBox" class="ui">ZEIT: <span id="time">40</span>s</div>
+        <div id="speedBox" class="ui"><span id="speed">0</span> km/h</div>
+        <div id="scoreBox" class="ui">SCORE: <span id="score">0</span></div>
+        <canvas id="rc" width="800" height="500"></canvas>
+    </div>
+    <p style="color:#888; margin-top:10px;">Steuerung: <b>A / D</b> (Pfeiltasten) = Lenken | <b>W</b> = Gas | <b>S</b> = Bremse</p>
+
+    <script>
+        const canvas = document.getElementById("rc");
+        const ctx = canvas.getContext("2d");
+
+        let speed = 0, maxSpeed = 200, position = 0, playerX = 0, score = 0, timeLeft = 40;
+        let gameStarted = false, gameOver = false;
+        const keys = {};
+
+        window.addEventListener("keydown", e => keys[e.code] = true);
+        window.addEventListener("keyup", e => keys[e.code] = false);
+
+        // Strecke generieren (Kurven-Kurven-Gerade)
+        const segments = [];
+        for(let i=0; i<500; i++) segments.push({ curve: 0 }); // Startgerade
+        for(let i=0; i<300; i++) segments.push({ curve: 2 }); // Rechtskurve
+        for(let i=0; i<400; i++) segments.push({ curve: -3 }); // Linkskurve
+        for(let i=0; i<300; i++) segments.push({ curve: 0 }); // Gerade
+        for(let i=0; i<400; i++) segments.push({ curve: 4 }); // Scharfe Rechtskurve
+        const trackLength = segments.length;
+
+        // Andere Autos
+        const cars = [];
+        for(let i=0; i<20; i++) {
+            cars.push({ z: 400 + i * 300, x: (Math.random() - 0.5) * 1.5, type: Math.floor(Math.random()*3) });
+        }
+
+        // Timer-Intervall
+        setInterval(() => {
+            if (gameStarted && !gameOver) {
+                timeLeft--;
+                document.getElementById("time").innerText = timeLeft;
+                if (timeLeft <= 0) gameOver = true;
+            }
+        }, 1000);
+
+        function update() {
+            if (gameOver) return;
+            if (!gameStarted) { if (keys["KeyW"]) gameStarted = true; return; }
+
+            // Beschleunigung & Bremse
+            if (keys["KeyW"] || keys["ArrowUp"]) speed += 2;
+            else if (keys["KeyS"] || keys["ArrowDown"]) speed -= 4;
+            else speed -= 1;
+
+            if (speed > maxSpeed) speed = maxSpeed;
+            if (speed < 0) speed = 0;
+
+            position += speed;
+            let currentSegIdx = Math.floor(position / 200) % trackLength;
+            let currentSeg = segments[currentSegIdx];
+
+            // Lenken (Nur wenn man fährt)
+            if (speed > 0) {
+                if (keys["KeyA"] || keys["ArrowLeft"]) playerX -= 0.04 * (speed / maxSpeed);
+                if (keys["KeyD"] || keys["ArrowRight"]) playerX += 0.04 * (speed / maxSpeed);
+                
+                // Fliehkraft in Kurven zieht das Auto nach außen
+                playerX -= currentSeg.curve * 0.003 * (speed / maxSpeed);
+            }
+
+            // Grenze der Straße abfragen
+            if (Math.abs(playerX) > 1 && speed > 50) speed -= 3; // Gras bremst ab
+            if (playerX < -1.8) playerX = -1.8;
+            if (playerX > 1.8) playerX = 1.8;
+
+            // Punkte & Autos updaten
+            score += Math.floor(speed / 20);
+            document.getElementById("score").innerText = score;
+            document.getElementById("speed").innerText = Math.floor(speed);
+
+            cars.forEach(c => {
+                c.z -= 5; // Autos kommen entgegen
+                if (c.z < 0) {
+                    c.z = position + 3000 + Math.random()*500;
+                    c.x = (Math.random() - 0.5) * 1.6;
+                }
+                // Kollisionsabfrage
+                if (Math.abs(position - c.z) < 40 && Math.abs(playerX - c.x) < 0.4) {
+                    speed = 20; // Crash bremst massiv aus
+                }
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0,0,800,500);
+            
+            // 1. Himmel & Horizont
+            ctx.fillStyle = "#0a1128"; ctx.fillRect(0,0,800,250);
+            ctx.fillStyle = "#1c2541"; ctx.fillRect(0,200,800,50);
+
+            // 2. Straße rendern (Pseudo-3D durch Linien-Projektion)
+            let startSeg = Math.floor(position / 200) % trackLength;
+            let dx = 0, camH = 1000;
+            
+            for(let n=0; n<120; n++) {
+                let seg = segments[(startSeg + n) % trackLength];
+                let z1 = (n * 200) - (position % 200);
+                let z2 = ((n+1) * 200) - (position % 200);
+
+                if (z1 <= 0) z1 = 1;
+
+                let scale1 = 400 / z1, scale2 = 400 / z2;
+                let y1 = 250 + (camH * scale1), y2 = 250 + (camH * scale2);
+                
+                dx += seg.curve * 4;
+                let x1 = 400 + dx, x2 = 400 + dx + seg.curve*4;
+
+                let w1 = 500 * scale1, w2 = 500 * scale2;
+
+                // Gras & Straße zeichnen
+                let colorGras = (Math.floor((startSeg+n)/3)%2) ? "#1b4332" : "#2d6a4f";
+                let colorRoad = (Math.floor((startSeg+n)/3)%2) ? "#333" : "#3c3c3c";
+                let colorLine = (Math.floor((startSeg+n)/3)%2) ? "#fff" : "#333";
+
+                ctx.fillStyle = colorGras; ctx.fillRect(0, y2, 800, y1 - y2);
+                ctx.fillStyle = colorRoad;
+                ctx.beginPath(); ctx.moveTo(x1-w1, y1); ctx.lineTo(x2-w2, y2); ctx.lineTo(x2+w2, y2); ctx.lineTo(x1+w1, y1); ctx.fill();
+
+                // Mittelstreifen
+                ctx.fillStyle = colorLine;
+                ctx.beginPath(); ctx.moveTo(x1-5*scale1, y1); ctx.lineTo(x2-5*scale2, y2); ctx.lineTo(x2+5*scale2, y2); ctx.lineTo(x1+5*scale1, y1); ctx.fill();
+            }
+
+            // 3. Andere Autos zeichnen
+            cars.forEach(c => {
+                let relativeZ = c.z - position;
+                if (relativeZ > 0 && relativeZ < 2000) {
+                    let scale = 400 / relativeZ;
+                    let carY = 250 + (1000 * scale);
+                    let carX = 400 + (c.x * 500 * scale);
+                    let carW = 60 * scale;
+
+                    ctx.fillStyle = "#ffaa00";
+                    ctx.fillRect(carX - carW/2, carY - carW/2, carW, carW/2);
+                    ctx.fillStyle = "#000"; ctx.fillRect(carX - carW/2, carY, carW/5, carW/5); ctx.fillRect(carX + carW/3, carY, carW/5, carW/5);
+                }
+            });
+
+            // 4. Spieler-Auto zeichnen (Unser roter Rennwagen)
+            let pX = 400 + (playerX * 150);
+            ctx.fillStyle = "#ff2222"; // Karosserie
+            ctx.fillRect(pX - 45, 430, 90, 30);
+            ctx.fillStyle = "#111"; // Reifen
+            ctx.fillRect(pX - 55, 440, 15, 25); ctx.fillRect(pX + 40, 440, 15, 25);
+            ctx.fillStyle = "#44ffff"; // Heckscheibe
+            ctx.fillRect(pX - 30, 415, 60, 15);
+
+            if (!gameStarted) {
+                ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0,0,800,500);
+                ctx.fillStyle = "#ffff00"; ctx.font = "30px monospace"; ctx.textAlign = "center";
+                ctx.fillText("HALTE 'W' GEDRÜCKT ZUM GAS GEBEN!", 400, 250);
+            } else if (gameOver) {
+                ctx.fillStyle = "rgba(0,0,0,0.8)"; ctx.fillRect(0,0,800,500);
+                ctx.fillStyle = "#ff0000"; ctx.font = "40px monospace"; ctx.textAlign = "center";
+                ctx.fillText("ZEIT ABGELAUFEN!", 400, 230);
+                ctx.fillStyle = "#fff"; ctx.font = "20px monospace";
+                ctx.fillText(`Dein Score: ${score}`, 400, 280);
+            }
+        }
+
+        function loop() { update(); draw(); requestAnimationFrame(loop); }
+        loop();
+    </script>
+</body>
+</html>

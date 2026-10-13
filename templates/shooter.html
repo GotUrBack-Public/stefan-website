@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Retro Space Invaders</title>
+    <style>
+        body { margin: 0; background: #050510; color: white; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        h1 { margin: 5px; font-size: 24px; text-shadow: 0 0 10px #00f0ff; letter-spacing: 2px; }
+        #gameContainer { position: relative; border: 4px solid #334; box-shadow: 0 0 30px rgba(0, 240, 255, 0.3); border-radius: 6px; }
+        canvas { background: #07071c; display: block; }
+        .ui-text { position: absolute; top: 15px; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; }
+        #scoreBoard { left: 20px; color: #00f0ff; }
+        #liveBoard { right: 20px; color: #ff3366; }
+        #levelBoard { left: 50%; transform: translateX(-50%); color: #ffcc00; }
+        #controlsHint { margin-top: 10px; font-size: 14px; color: #889; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h1>SPACE SHOOTER 🚀</h1>
+    <div id="gameContainer">
+        <div id="scoreBoard" class="ui-text">SCORE: <span id="score">0</span></div>
+        <div id="levelBoard" class="ui-text">STAGE: <span id="level">1</span></div>
+        <div id="liveBoard" class="ui-text">LIVES: <span id="lives">3</span></div>
+        <canvas id="gameCanvas" width="800" height="550"></canvas>
+    </div>
+    <div id="controlsHint">Steuerung: <b>A / D</b> oder <b>Pfeiltasten</b> zum Bewegen | <b>Leertaste</b> zum Schießen</div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let score = 0;
+        let lives = 3;
+        let level = 1;
+        let gameOver = false;
+        let gameStarted = false;
+
+        const keys = {};
+        window.addEventListener("keydown", e => keys[e.code] = true);
+        window.addEventListener("keyup", e => keys[e.code] = false);
+
+        const player = { x: 375, y: 490, width: 50, height: 40, speed: 7, cooldown: 0 };
+        let lasers = [];
+        let aliens = [];
+        let particles = [];
+        let stars = [];
+
+        for(let i=0; i<60; i++) {
+            stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2+1, speed: Math.random()*1+0.5 });
+        }
+
+        function spawnAliens() {
+            aliens = [];
+            let rows = 4;
+            let cols = 8;
+            for(let r=0; r<rows; r++) {
+                for(let c=0; c<cols; c++) {
+                    aliens.push({
+                        x: 80 + c * 80,
+                        y: 60 + r * 55,
+                        width: 45,
+                        height: 35,
+                        hp: 1,
+                        color: `hsl(${(r * 45 + level * 20) % 360}, 85%, 60%)`
+                    });
+                }
+            }
+        }
+
+        let alienDirection = 1;
+
+        function update() {
+            if (gameOver || !gameStarted) return;
+
+            if (keys["KeyA"] || keys["ArrowLeft"]) player.x -= player.speed;
+            if (keys["KeyD"] || keys["ArrowRight"]) player.x += player.speed;
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+
+            if (player.cooldown > 0) player.cooldown--;
+
+            if (keys["Space"] && player.cooldown === 0) {
+                lasers.push({ x: player.x + player.width/2 - 3, y: player.y, width: 6, height: 15, speed: 9 });
+                player.cooldown = 15;
+            }
+
+            stars.forEach(s => {
+                s.y += s.speed;
+                if(s.y > canvas.height) s.y = 0;
+            });
+
+            lasers.forEach((l, index) => {
+                l.y -= l.speed;
+                if (l.y < 0) lasers.splice(index, 1);
+            });
+
+            let shiftDown = false;
+            aliens.forEach(a => {
+                a.x += (1.5 + level * 0.2) * alienDirection;
+                if (a.x <= 10 || a.x >= canvas.width - a.width - 10) shiftDown = true;
+            });
+
+            if (shiftDown) {
+                alienDirection *= -1;
+                aliens.forEach(a => {
+                    a.y += 20;
+                    if (a.y + a.height >= player.y) gameOver = true;
+                });
+            }
+
+            lasers.forEach((l, lIdx) => {
+                aliens.forEach((a, aIdx) => {
+                    if (l.x < a.x + a.width && l.x + l.width > a.x && l.y < a.y + a.height && l.y + l.height > a.y) {
+                        lasers.splice(lIdx, 1);
+                        aliens.splice(aIdx, 1);
+                        score += 100;
+                        document.getElementById("score").innerText = score;
+                    }
+                });
+            });
+
+            if (aliens.length === 0) {
+                level++;
+                document.getElementById("level").innerText = level;
+                spawnAliens();
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#ffffff";
+            stars.forEach(s => { ctx.fillRect(s.x, s.y, s.size, s.size); });
+
+            ctx.fillStyle = "#00f0ff";
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+
+            ctx.fillStyle = "#ffcc00";
+            lasers.forEach(l => { ctx.fillRect(l.x, l.y, l.width, l.height); });
+
+            aliens.forEach(a => {
+                ctx.fillStyle = a.color;
+                ctx.fillRect(a.x, a.y, a.width, a.height);
+            });
+
+            if (!gameStarted) {
+                ctx.fillStyle = "rgba(10, 10, 30, 0.85)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#00f0ff";
+                ctx.font = "20px 'Courier New'";
+                ctx.textAlign = "center";
+                ctx.fillText("Klicke hier zum Starten!", canvas.width/2, canvas.height/2);
+            } else if (gameOver) {
+                ctx.fillStyle = "rgba(30, 5, 5, 0.9)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#ff3366";
+                ctx.font = "30px 'Courier New'";
+                ctx.textAlign = "center";
+                ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+            }
+        }
+
+        canvas.addEventListener("click", () => {
+            if(!gameStarted || gameOver) {
+                score = 0; level = 1; lives = 3;
+                gameOver = false; gameStarted = true;
+                spawnAliens();
+            }
+        });
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
+</body>
+</html>

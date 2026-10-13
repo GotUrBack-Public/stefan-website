@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Retro 3D Raycaster</title>
+    <style>
+        body { margin: 0; background: #111; color: white; font-family: monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        h1 { margin: 5px; font-size: 24px; color: #00ffcc; text-shadow: 0 0 10px #00ffcc; }
+        #canvasContainer { position: relative; border: 4px solid #333; box-shadow: 0 0 20px rgba(0,255,204,0.2); }
+        canvas { display: block; background: black; }
+        .hud { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 20px; background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 5px; border: 1px solid #00ffcc; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <h1>3D LABYRINTH SHOOTER 🧭</h1>
+    <div id="canvasContainer">
+        <canvas id="gameCanvas" width="640" height="400"></canvas>
+        <div class="hud">ZIEL: FINDE DEN GELBEN AUSGANG!</div>
+    </div>
+    <p style="color:#777; margin-top:10px;">Steuerung: <b>W / S</b> = Vor & Zurück | <b>A / D</b> = Links & Rechts drehen</p>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const mapWidth = 10;
+        const mapHeight = 10;
+        const tileSize = 32;
+
+        // 1 = Wand, 0 = Leer, 2 = Ausgang (Ziel)
+        // Komplett flach geschrieben, damit beim Abschicken im Chat absolut nichts verschwindet!
+        const map = [
+            1,1,1,1,1,1,1,1,1,1,
+            1,0,0,0,1,0,0,0,2,1,
+            1,0,1,0,1,0,1,1,0,1,
+            1,0,1,0,0,0,0,1,0,1,
+            1,0,1,1,1,1,0,1,0,1,
+            1,0,0,0,0,1,0,0,0,1,
+            1,1,1,1,0,1,1,1,0,1,
+            1,0,0,0,0,0,0,1,0,1,
+            1,0,1,1,1,1,0,0,0,1,
+            1,1,1,1,1,1,1,1,1,1
+        ];
+
+        let playerX = 45;
+        let playerY = 45;
+        let playerAngle = 0.5;
+        let fov = Math.PI / 3;
+
+        const keys = {};
+        window.addEventListener("keydown", e => keys[e.code] = true);
+        window.addEventListener("keyup", e => keys[e.code] = false);
+
+        function update() {
+            let moveSpeed = 1.5;
+            let rotSpeed = 0.04;
+
+            if (keys["KeyA"] || keys["ArrowLeft"]) playerAngle -= rotSpeed;
+            if (keys["KeyD"] || keys["ArrowRight"]) playerAngle += rotSpeed;
+
+            let newX = playerX;
+            let newY = playerY;
+
+            if (keys["KeyW"] || keys["ArrowUp"]) {
+                newX += Math.cos(playerAngle) * moveSpeed;
+                newY += Math.sin(playerAngle) * moveSpeed;
+            }
+            if (keys["KeyS"] || keys["ArrowDown"]) {
+                newX -= Math.cos(playerAngle) * moveSpeed;
+                newY -= Math.sin(playerAngle) * moveSpeed;
+            }
+
+            let checkMapX = Math.floor(newX / tileSize);
+            let checkMapY = Math.floor(newY / tileSize);
+
+            if (checkMapY >= 0 && checkMapY < mapHeight && checkMapX >= 0 && checkMapX < mapWidth) {
+                let mapIndex = checkMapY * mapWidth + checkMapX;
+                if (map[mapIndex] === 0) {
+                    playerX = newX;
+                    playerY = newY;
+                } else if (map[mapIndex] === 2) {
+                    alert("GEWONNEN! Du hast den Ausgang gefunden! 🎉");
+                    playerX = 45; playerY = 45; playerAngle = 0.5;
+                }
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = "#222"; ctx.fillRect(0, 0, canvas.width, canvas.height / 2);
+            ctx.fillStyle = "#444"; ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2);
+
+            const numRays = canvas.width;
+            const halfFov = fov / 2;
+
+            for (let i = 0; i < numRays; i++) {
+                let rayAngle = (playerAngle - halfFov) + (i / numRays) * fov;
+                let distance = 0;
+                let hitWall = false;
+                let wallType = 0;
+
+                let cos = Math.cos(rayAngle);
+                let sin = Math.sin(rayAngle);
+
+                while (!hitWall && distance < 400) {
+                    distance += 1.0;
+                    let checkX = Math.floor((playerX + cos * distance) / tileSize);
+                    let checkY = Math.floor((playerY + sin * distance) / tileSize);
+
+                    if (checkX < 0 || checkX >= mapWidth || checkY < 0 || checkY >= mapHeight) {
+                        hitWall = true;
+                        distance = 400;
+                    } else {
+                        let mapIndex = checkY * mapWidth + checkX;
+                        if (map[mapIndex] > 0) {
+                            hitWall = true;
+                            wallType = map[mapIndex];
+                        }
+                    }
+                }
+
+                let correctedDistance = distance * Math.cos(rayAngle - playerAngle);
+                let wallHeight = Math.min(canvas.height, (tileSize * canvas.height) / correctedDistance);
+                let colorValue = Math.max(0, 255 - (correctedDistance * 0.7));
+                
+                if (wallType === 2) {
+                    ctx.strokeStyle = `rgb(${colorValue}, ${colorValue}, 0)`;
+                } else {
+                    ctx.strokeStyle = `rgb(0, ${colorValue}, ${colorValue})`;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(i, (canvas.height / 2) - (wallHeight / 2));
+                ctx.lineTo(i, (canvas.height / 2) + (wallHeight / 2));
+                ctx.stroke();
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+</html>

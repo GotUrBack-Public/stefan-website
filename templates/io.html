@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Survival .IO Game</title>
+    <style>
+        body { margin: 0; background: #222; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; user-select: none; }
+        #gameContainer { position: relative; border: 4px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.6); border-radius: 8px; }
+        canvas { display: block; background: #557a46; cursor: crosshair; }
+        .hud { position: absolute; top: 15px; font-size: 18px; font-weight: bold; font-family: monospace; text-shadow: 1px 1px 2px #000; pointer-events: none; padding: 0 20px; width: calc(100% - 40px); display: flex; justify-content: space-between; }
+        #invBox { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; background: rgba(0,0,0,0.6); padding: 8px; border-radius: 5px; border: 2px solid #fff; }
+        .slot { width: 60px; height: 60px; margin: 0 5px; border: 2px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; background: #333; position: relative; cursor: pointer; }
+        .slot.active { border-color: #00ffff; box-shadow: 0 0 10px #00ffff; background: #444; }
+        .slot-count { position: absolute; bottom: 2px; right: 4px; font-size: 12px; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <h1 style="margin:5px; font-size: 24px; color: #f1c40f;">SURVIVAL.IO 🌲⚔️</h1>
+    <div id="gameContainer">
+        <div class="hud">
+            <div style="color:#fff;">HOLZ: <span id="lblWood" style="color:#e67e22;">0</span> | STEIN: <span id="lblStone" style="color:#bdc3c7;">0</span></div>
+            <div style="color:#ff4757;">HP: <span id="lblHp">100</span>% | SCORE: <span id="lblScore" style="color:#f1c40f;">0</span></div>
+        </div>
+        <canvas id="ioCanvas" width="900" height="550"></canvas>
+        <div id="invBox">
+            <div class="slot active" id="slot-1" onclick="selectSlot(1)">⛏️<span style="font-size:9px; margin-top:2px;">Axt</span></div>
+            <div class="slot" id="slot-2" onclick="selectSlot(2)">🪵<div class="slot-count" id="c-wood">0</div><span style="font-size:9px; margin-top:2px;">Wand (20H)</span></div>
+        </div>
+    </div>
+    <p style="color:#aaa; margin-top:8px; font-size:13px;">Steuerung: <b>W / A / S / D</b> = Bewegen | <b>Maus bewegen</b> = Zielen | <b>LinksKlick</b> = Schlagen / Bauen | Tasten <b>1 - 2</b> = Inventar</p>
+
+    <script>
+        const canvas = document.getElementById("ioCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const MAP_SIZE = 2000;
+        let player = { x: 1000, y: 1000, r: 20, hp: 100, maxHp: 100, speed: 4, angle: 0, wood: 0, stone: 0, score: 0, swing: 0, isSwinging: false };
+        
+        let activeSlot = 1;
+        let cameraX = 0, cameraY = 0;
+        let mouseX = 0, mouseY = 0;
+
+        let resources = [];
+        let zombies = [];
+        let buildings = [];
+
+        const keys = {};
+        window.addEventListener("keydown", e => {
+            keys[e.code] = true;
+            if(e.code === "Digit1") selectSlot(1);
+            if(e.code === "Digit2") selectSlot(2);
+        });
+        window.addEventListener("keyup", e => keys[e.code] = false);
+
+        canvas.addEventListener("mousemove", e => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+
+        function spawnResources() {
+            resources = [];
+            for(let i=0; i<40; i++) {
+                resources.push({
+                    x: Math.random() * (MAP_SIZE - 200) + 100,
+                    y: Math.random() * (MAP_SIZE - 200) + 100,
+                    type: Math.random() > 0.5 ? 'tree' : 'stone',
+                    r: 25,
+                    hp: 3
+                });
+            }
+        }
+
+        function selectSlot(num) {
+            activeSlot = num;
+            document.getElementById("slot-1").classList.remove("active");
+            document.getElementById("slot-2").classList.remove("active");
+            document.getElementById("slot-" + num).classList.add("active");
+        }
+
+        canvas.addEventListener("mousedown", e => {
+            if (player.hp <= 0) return;
+            
+            if (e.button === 0) {
+                if (activeSlot === 1 && !player.isSwinging) {
+                    player.isSwinging = true;
+                    player.swing = 0;
+                    
+                    let hitX = player.x + Math.cos(player.angle) * 40;
+                    let hitY = player.y + Math.sin(player.angle) * 40;
+
+                    for (let i = resources.length - 1; i >= 0; i--) {
+                        let res = resources[i];
+                        if (Math.hypot(hitX - res.x, hitY - res.y) < res.r + 20) {
+                            res.hp--;
+                            if (res.type === 'tree') { player.wood += 10; player.score += 20; }
+                            else { player.stone += 10; player.score += 30; }
+                            if (res.hp <= 0) resources.splice(i, 1);
+                        }
+                    }
+
+                    for (let i = zombies.length - 1; i >= 0; i--) {
+                        let z = zombies[i];
+                        if (Math.hypot(hitX - z.x, hitY - z.y) < z.r + 20) {
+                            z.hp -= 25;
+                            if (z.hp <= 0) { zombies.splice(i, 1); player.score += 150; }
+                        }
+                    }
+
+                } else if (activeSlot === 2 && player.wood >= 20) {
+                    let buildX = player.x + Math.cos(player.angle) * 50;
+                    let buildY = player.y + Math.sin(player.angle) * 50;
+                    buildings.push({ x: buildX, y: buildY, r: 18, hp: 100 });
+                    player.wood -= 20;
+                }
+                updateHUD();
+            }
+        });
+
+        function updateHUD() {
+            document.getElementById("lblWood").innerText = player.wood;
+            document.getElementById("lblStone").innerText = player.stone;
+            document.getElementById("lblHp").innerText = Math.floor(Math.max(0, player.hp));
+            document.getElementById("lblScore").innerText = player.score;
+            document.getElementById("c-wood").innerText = player.wood;
+        }
+
+        function update() {
+            if (player.hp <= 0) return;
+
+            let moveX = 0, moveY = 0;
+            if (keys["KeyW"] || keys["ArrowUp"]) moveY = -player.speed;
+            if (keys["KeyS"] || keys["ArrowDown"]) moveY = player.speed;
+            if (keys["KeyA"] || keys["ArrowLeft"]) moveX = -player.speed;
+            if (keys["KeyD"] || keys["ArrowRight"]) moveX = player.speed;
+
+            player.x += moveX;
+            player.y += moveY;
+
+            if (player.x < player.r) player.x = player.r;
+            if (player.x > MAP_SIZE - player.r) player.x = MAP_SIZE - player.r;
+            if (player.y < player.r) player.y = player.r;
+            if (player.y > MAP_SIZE - player.r) player.y = MAP_SIZE - player.r;
+
+            let worldMouseX = mouseX + cameraX;
+            let worldMouseY = mouseY + cameraY;
+            player.angle = Math.atan2(worldMouseY - player.y, worldMouseX - player.x);
+
+            if (player.isSwinging) {
+                player.swing += 0.3;
+                if (player.swing >= Math.PI * 2) { player.isSwinging = false; player.swing = 0; }
+            }
+
+            if (zombies.length < 6 && Math.random() < 0.015) {
+                let ang = Math.random() * Math.PI * 2;
+                zombies.push({
+                    x: player.x + Math.cos(ang) * 500,
+                    y: player.y + Math.sin(ang) * 500,
+                    r: 18, speed: 2, hp: 50
+                });
+            }
+
+            zombies.forEach(z => {
+                let zAngle = Math.atan2(player.y - z.y, player.x - z.x);
+                let blocked = false;
+                
+                buildings.forEach(b => {
+                    if (Math.hypot(z.x - b.x, z.y - b.y) < b.r + z.r) {
+                        blocked = true;
+                        b.hp -= 0.3;
+                    }
+                });
+
+                if (!blocked) {
+                    z.x += Math.cos(zAngle) * z.speed;
+                    z.y += Math.sin(zAngle) * z.speed;
+                }
+
+                if (Math.hypot(player.x - z.x, player.y - z.y) < player.r + z.r) {
+                    player.hp -= 0.2;
+                    updateHUD();
+                }
+            });
+
+            buildings = buildings.filter(b => b.hp > 0);
+            cameraX = player.x - canvas.width / 2;
+            cameraY = player.y - canvas.height / 2;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(-cameraX, -cameraY);
+
+            ctx.strokeStyle = "#4d6e3e";
+            ctx.lineWidth = 2;
+            for (let x = 0; x < MAP_SIZE; x += 100) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, MAP_SIZE); ctx.stroke();
+            }
+            for (let y = 0; y < MAP_SIZE; y += 100) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(MAP_SIZE, y); ctx.stroke();
+            }
+
+            buildings.forEach(b => {
+                ctx.fillStyle = "#a67c52"; ctx.strokeStyle = "#5c3a21"; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            });
+
+            resources.forEach(res => {
+                if (res.type === 'tree') {
+                    ctx.fillStyle = "#2d6a4f"; ctx.beginPath(); ctx.arc(res.x, res.y, res.r, 0, Math.PI * 2); ctx.fill();
+                } else {
+                    ctx.fillStyle = "#95a5a6"; ctx.beginPath(); ctx.arc(res.x, res.y, res.r, 0, Math.PI * 2); ctx.fill();
