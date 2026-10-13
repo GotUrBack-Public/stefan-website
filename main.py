@@ -1,12 +1,16 @@
+import os
 from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def home():
-    # Öffnet dein neues, grünes Profi-Design
-    return render_template('index.html')
+    return render_template("Kommunikation.html")
 
-if __name__ == '__main__':
-    # Wichtig: Port 5002, damit deine Spiele-Zentrale (5001) weiterlaufen kann!
-    app.run(host='0.0.0.0', port=5002, debug=True)
+@app.route("/spiele-hub")
+def spiele_hub():
+    return render_template("spiele.html")
+
+if __name__ == "__main__":
+    # Fest auf Port 10000 für Render gestellt
+    app.run(debug=True, host="0.0.0.0", port=10000)
