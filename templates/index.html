@@ -3,297 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stefans Spiele</title>
+    <title>STEFAN | Mod & Community Management</title>
     <style>
-        @import url('https://googleapis.com');
-
         body {
-            background-color: #0d0f14;
-            background-image: radial-gradient(circle at center, #0a192f 0%, #0d0f14 70%);
-            color: #ffffff;
-            font-family: 'Share Tech Mono', sans-serif;
+            background-color: #0d0f12;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 40px 20px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        .stefans-header, .stefans-divider-box, .widget-box {
-            border: 2px solid #00bfff;
-            border-radius: 12px;
-            padding: 25px 50px;
-            background: rgba(9, 17, 34, 0.85);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
-            text-align: center;
-            width: 85%;
-            max-width: 650px;
-            margin-bottom: 30px;
-        }
-
-        .stefans-title, .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 2.2rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #00bfff;
-            text-shadow: 0 0 10px rgba(0, 191, 255, 0.4);
-            margin: 0;
+        /* Fette Cyber-Navbar oben */
+        .navbar {
+            width: 100%;
+            max-width: 1200px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
+            padding: 25px 40px;
+            box-sizing: border-box;
+            border-bottom: 2px solid #1e293b;
         }
 
-        .stefans-subtitle, .section-subtitle {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            color: #8892b0;
-            margin-top: 5px;
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+
+        /* Spiele-Hub Button */
+        .hub-btn {
+            background-color: #3b82f6;
+            color: #ffffff !important;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: transform 0.2s, background-color 0.2s !important;
+        }
+
+        .hub-btn:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* Hauptbereich */
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .header-box {
+            background-color: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .header-box h1 {
+            color: #ffffff;
+            margin: 0 0 10px 0;
+            font-size: 2.3rem;
+        }
+
+        .header-box p {
+            color: #3b82f6;
+            font-weight: bold;
+            margin: 0;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Spiele Grid */
-        .games-grid {
+        /* Mod-Statistiken */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            width: 85%;
-            max-width: 750px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
             margin-bottom: 40px;
         }
 
-        .game-card {
-            background: rgba(23, 31, 48, 0.7);
-            border: 1px solid #233554;
-            border-radius: 10px;
-            padding: 25px 15px;
+        .stat-card {
+            background-color: #111827;
+            border: 2px solid #1e293b;
+            border-radius: 12px;
+            padding: 25px;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: white;
+            transition: border-color 0.2s;
         }
 
-        .game-card:hover {
-            border-color: #00bfff;
-            box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
-            transform: translateY(-5px);
+        .stat-card:hover {
+            border-color: #3b82f6;
         }
 
-        .game-icon {
+        .stat-number {
             font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #a8b2d1;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 5px;
         }
 
-        .game-card:hover .game-icon {
-            color: #00bfff;
-        }
-
-        .game-name {
+        .stat-title {
             font-size: 1.1rem;
-            font-weight: bold;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
 
-        /* Unterer Bereich Widgets */
-        .widgets-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            width: 85%;
-            max-width: 750px;
-        }
-
-        .widget-box {
-            width: auto;
-            max-width: none;
-            margin-bottom: 0;
-            padding: 20px;
-            text-align: left;
-            border-color: #0088cc;
-            box-shadow: 0 0 15px rgba(0, 136, 204, 0.15);
-        }
-
-        .widget-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #00bfff;
-            margin-top: 0;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Gästebuch Styles */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .guestbook-input {
-            flex: 1;
-            background: #101726;
-            border: 1px solid #233554;
-            border-radius: 5px;
-            padding: 10px;
-            color: white;
-            font-family: inherit;
-        }
-
-        .guestbook-input:focus {
-            outline: none;
-            border-color: #00bfff;
-        }
-
-        .send-btn {
-            background: #00bfff;
-            color: #0d0f14;
-            border: none;
-            padding: 0 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background 0.2s;
-        }
-
-        .send-btn:hover {
-            background: #0088cc;
-        }
-
-        .chat-logs {
-            font-size: 0.9rem;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .chat-msg { margin: 0; line-height: 1.4; }
-        .msg-system { color: #00ffcc; }
-        .msg-user { color: #ff9900; }
-
-        /* News & Status Styles */
-        .news-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 20px 0;
-            font-size: 0.9rem;
-        }
-
-        .news-item {
-            margin-bottom: 15px;
+        .stat-desc {
+            color: #94a3b8;
+            font-size: 0.95rem;
             line-height: 1.4;
         }
 
-        .news-tag { color: #ff3366; font-weight: bold; }
-        .news-tag-update { color: #00bfff; font-weight: bold; }
-
-        .status-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 0.9rem;
+        /* Job-Beschreibung */
+        .info-section {
+            background-color: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
         }
 
-        .status-dot {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .info-section h2 {
+            color: #ffffff;
+            margin-top: 0;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 10px;
         }
 
-        .indicator {
-            width: 8px;
-            height: 8px;
-            background-color: #00ff66;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #00ff66;
+        .info-section ul {
+            padding-left: 20px;
+            line-height: 1.8;
+            color: #e2e8f0;
+        }
+
+        .cta-box {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .cta-link {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            text-decoration: none;
+            padding: 15px 35px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .cta-link:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Bereich 1 -->
-    <div class="stefans-header">
-        <h1 class="stefans-title">
-            <span style="font-size: 1.5rem;">🎮</span> STEFANS SPIELE
-        </h1>
-        <div class="stefans-subtitle">Bereich 1: Arcade Collection</div>
-    </div>
+    <!-- Die geforderte Navbar mit dem Spiele-Hub-Button -->
+    <nav class="navbar">
+        <a href="/" class="logo">✦ STEFAN</a>
+        <div class="nav-links">
+            <a href="/">Startseite</a>
+            <a href="/spiele-hub" class="hub-btn">Spiele-Hub 🎮</a>
+        </div>
+    </nav>
 
-    <!-- Spiele Grid -->
-    <div class="games-grid">
-        <a href="/spiel" class="game-card">
-            <div class="game-icon">⚔️</div>
-            <div class="game-name">Monster Clicker</div>
-        </a>
-        <a href="/shooter" class="game-card">
-            <div class="game-icon">🚀</div>
-            <div class="game-name">Space Shooter</div>
-        </a>
-        <a href="/racing" class="game-card">
-            <div class="game-icon">🏎️</div>
-            <div class="game-name">Turbo Racer</div>
-        </a>
-        <a href="/jump" class="game-card">
-            <div class="game-icon">🦘</div>
-            <div class="game-name">Infinite Jump</div>
-        </a>
-    </div>
+    <div class="container">
+        <!-- Deine Mod-Tätigkeiten & Statistiken -->
+        <div class="header-box">
+            <h1>Game & Community Management</h1>
+            <p>Offizielle Portfolio-Zentrale & Mod-Tätigkeiten</p>
+        </div>
 
-    <!-- Header Bereich 2 -->
-    <div class="stefans-divider-box">
-        <h2 class="section-title">
-            <span style="font-size: 1.4rem;">💠</span> Cyber Terminal
-        </h2>
-        <div class="section-subtitle">Bereich 2: Community Hub</div>
-    </div>
-
-    <!-- Untere Widgets -->
-    <div class="widgets-container">
-        <!-- Live-Gästebuch -->
-        <div class="widget-box">
-            <h3 class="widget-title">🗣️ LIVE-GÄSTEBUCH</h3>
-            <div class="input-group">
-                <input type="text" class="guestbook-input" placeholder="Schreib was rein...">
-                <button class="send-btn">Senden</button>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">5+ Jahre</div>
+                <div class="stat-title">Erfahrung</div>
+                <div class="stat-desc">Erfolgreiches Management von großen Gaming-Communitys und Discord-Servern.</div>
             </div>
-            <div class="chat-logs">
-                <p class="chat-msg"><span class="msg-system">System:</span> Willkommen im Terminal! Hinterlasse eine Nachricht.</p>
-                <p class="chat-msg"><span class="msg-user">Kumpel X:</span> Die Blitze im Hintergrund sind extrem wild! ⚡</p>
+            <div class="stat-card">
+                <div class="stat-number">1k+ Fälle</div>
+                <div class="stat-title">Gelöste Support-Tickets</div>
+                <div class="stat-desc">Professioneller User-Support, Konfliktlösung und Ticket-Bearbeitung im Handumdrehen.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-title">System-Überwachung</div>
+                <div class="stat-desc">Automatisierte Filterung, Schutz vor Raids und Optimierung von Server-Strukturen.</div>
             </div>
         </div>
 
-        <!-- Ankündigungen & Status -->
-        <div class="widget-box">
-            <h3 class="widget-title">📢 ANKÜNDIGUNGEN & NEWS</h3>
-            <ul class="news-list">
-                <li class="news-item"><span class="news-tag">📌 Neues Projekt:</span> Ein 2D-Labyrinth-Spiel befindet sich aktuell in der Entwicklung!</li>
-                <li class="news-item"><span class="news-tag-update">🛠️ Update:</span> Das Design des Hubs wurde auf ein doppeltes Kasten-System optimiert.</li>
+        <div class="info-section">
+            <h2>Gute Server brauchen Struktur 🛠️</h2>
+            <p>Als erfahrener Community-Moderator sorge ich für ein sicheres, aktives und toxizitätsfreies Umfeld. Meine Kernkompetenzen umfassen:</p>
+            <ul>
+                <li><strong>Konfliktmanagement:</strong> Deeskalation bei Streitigkeiten zwischen Usern.</li>
+                <li><strong>Regelwerk-Durchsetzung:</strong> Konsequente, aber faire Einhaltung der Community-Richtlinien.</li>
+                <li><strong>Event-Planung:</strong> Organisation von Community-Turnieren und Spiele-Abenden.</li>
+                <li><strong>Bot-Konfiguration:</strong> Einrichtung von Moderations- und Log-Systemen zur Serverabsicherung.</li>
             </ul>
+        </div>
 
-            <h3 class="widget-title" style="margin-top: 25px; margin-bottom: 10px;">🟢 SYSTEM STATUS</h3>
-            <div class="status-row">
-                <span>Flask Webserver</span>
-                <div class="indicator"></div>
-            </div>
-            <div class="status-row" style="margin-top: 15px;">
-                <span>ngrok Live-Tunnel</span>
-                <div class="indicator"></div>
-            </div>
+        <!-- Weiterleitung zum Spiele-Hub unten -->
+        <div class="cta-box">
+            <p style="color: #94a3b8; margin-bottom: 15px;">Lust auf eine Pause? Besuche meine Arcade-Sammlung:</p>
+            <a href="/spiele-hub" class="cta-link">Direkt zum Spiele-Hub 🎮</a>
         </div>
     </div>
 
