@@ -3,88 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STEFAN | Spiele-Hub 🎮</title>
+    <title>STEFAN | Cyber Arcade 🎮</title>
     <style>
+        @import url('https://googleapis.com');
+
         body {
-            background-color: #0d0f12;
-            color: #e2e8f0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #05070a;
+            color: #00f0ff;
+            font-family: 'Rajdhani', sans-serif;
             margin: 0;
             padding: 40px;
             text-align: center;
+            background-image: 
+                radial-gradient(at 50% 0%, rgba(0, 240, 255, 0.15) 0px, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            min-height: 100vh;
         }
 
         h1 {
+            font-family: 'Orbitron', sans-serif;
             color: #ffffff;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.2);
         }
 
         .subtitle {
+            font-family: 'Orbitron', sans-serif;
             color: #94a3b8;
-            margin-bottom: 40px;
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
         }
 
-        /* Spiele-Raster */
+        /* Spiele-Grid */
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            max-width: 1000px;
-            margin: 0 auto 40px auto;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto 50px auto;
         }
 
-        /* Spiele-Karten */
+        /* Ultimative Cyber-Karten */
         .game-card {
-            background-color: #1e293b;
-            border: 2px solid #334155;
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            border: 2px solid #00f0ff;
             border-radius: 16px;
-            padding: 25px;
+            padding: 35px 25px;
             text-decoration: none;
             color: #ffffff;
-            font-weight: bold;
-            font-size: 1.2rem;
-            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1), inset 0 0 15px rgba(0, 240, 255, 0.05);
         }
 
+        /* Glühender Neon-Effekt beim Drüberfahren */
         .game-card:hover {
-            transform: translateY(-5px);
-            border-color: #3b82f6;
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            border-color: #ff007f; /* Wechselt auf giftiges Neon-Pink */
+            color: #ff007f;
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.2);
         }
 
+        /* Subtiles Pulsieren für die Icons */
         .game-icon {
-            font-size: 2.5rem;
+            font-size: 3.5rem;
+            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.3));
+            transition: transform 0.3s;
         }
 
-        /* Zurück-Button */
+        .game-card:hover .game-icon {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 12px rgba(255, 0, 127, 0.6));
+        }
+
+        /* Zurück-Button im Sci-Fi Look */
         .back-btn {
             display: inline-block;
-            background-color: #334155;
-            color: #e2e8f0;
+            background: transparent;
+            color: #00f0ff;
+            border: 2px solid #00f0ff;
+            font-family: 'Orbitron', sans-serif;
             text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.2s;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
         .back-btn:hover {
-            background-color: #475569;
+            background-color: #00f0ff;
+            color: #05070a;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
 
-    <h1>Willkommen im Spiele-Hub! 🎮</h1>
-    <p class="subtitle">Wähle ein Spiel aus und zocke direkt im Browser.</p>
+    <h1>Cyber Arcade 🎮</h1>
+    <p class="subtitle">// WÄHLE EINE OPERATION AUS UND STARTEN DEN HACK</p>
 
-    <!-- Hier sind all deine hochgeladenen Spiele verlinkt -->
     <div class="games-grid">
         <a href="/clicker" class="game-card">
             <span class="game-icon">🖱️</span>
@@ -113,7 +151,7 @@
     </div>
 
     <br>
-    <a href="/" class="back-btn">⬅️ Zurück zur Startseite</a>
+    <a href="/" class="back-btn">⬅️ System-Zentrale</a>
 
 </body>
 </html>
