@@ -163,9 +163,55 @@
             color: #e2e8f0;
         }
 
+        /* Neue Kontakt-Box */
+        .contact-section {
+            background-color: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .contact-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .contact-method {
+            background-color: #111827;
+            border: 1px solid #334155;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .contact-method:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
         .cta-box {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 40px;
+            border-top: 2px solid #1e293b;
+            padding-top: 30px;
         }
 
         .cta-link {
@@ -177,7 +223,7 @@
             font-weight: bold;
             font-size: 1.2rem;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 15 rgba(59, 130, 246, 0.4);
             transition: transform 0.2s, background-color 0.2s;
         }
 
@@ -189,7 +235,6 @@
 </head>
 <body>
 
-    <!-- Die geforderte Navbar mit dem Spiele-Hub-Button -->
     <nav class="navbar">
         <a href="/" class="logo">✦ STEFAN</a>
         <div class="nav-links">
@@ -199,7 +244,6 @@
     </nav>
 
     <div class="container">
-        <!-- Deine Mod-Tätigkeiten & Statistiken -->
         <div class="header-box">
             <h1>Game & Community Management</h1>
             <p>Offizielle Portfolio-Zentrale & Mod-Tätigkeiten</p>
@@ -234,7 +278,24 @@
             </ul>
         </div>
 
-        <!-- Weiterleitung zum Spiele-Hub unten -->
+        <!-- Neue, fette Kontakt-Zentrale -->
+        <div class="contact-section">
+            <h2>Projektanfragen & Kontakt ✉️</h2>
+            <p style="color: #94a3b8;">Du suchst einen zuverlässigen Moderator für dein Projekt? Melde dich direkt bei mir:</p>
+            
+            <div class="contact-grid">
+                <!-- Discord Kontakt -->
+                <a href="https://discord.com" target="_blank" class="contact-method">
+                    <span>💬</span> Discord: @stefan_mod
+                </a>
+                
+                <!-- E-Mail Kontakt -->
+                <a href="mailto:deine-email@beispiel.de" class="contact-method">
+                    <span>📧</span> E-Mail schreiben
+                </a>
+            </div>
+        </div>
+
         <div class="cta-box">
             <p style="color: #94a3b8; margin-bottom: 15px;">Lust auf eine Pause? Besuche meine Arcade-Sammlung:</p>
             <a href="/spiele-hub" class="cta-link">Direkt zum Spiele-Hub 🎮</a>
