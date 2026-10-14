@@ -1,119 +1,163 @@
-´<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STEFANS SPIELE 🎮</title>
     <style>
+        @import url('https://googleapis.com');
+
         body {
-            background-color: #05070a;
+            background-color: #0b0e14;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             margin: 0;
             padding: 40px;
             text-align: center;
-            /* Das System mit den cleanen blauen Blitzen an den Seiten */
-            background-image: 
-                linear-gradient(90deg, rgba(0, 240, 255, 0.15) 0%, transparent 15%, transparent 85%, rgba(0, 240, 255, 0.15) 100%),
-                radial-gradient(circle at 10% 30%, #00f0ff 1px, transparent 1px),
-                radial-gradient(circle at 90% 70%, #00f0ff 1px, transparent 1px);
-            background-size: 100% 100%, 150px 150px, 150px 150px;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Der große, cleane blaue Titel-Kasten */
+        /* Echte animierte blaue Neon-Blitze links und rechts im Hintergrund */
+        body::before, body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            width: 8px;
+            height: 100%;
+            background: #00d2ff;
+            box-shadow: 0 0 20px #00d2ff, 0 0 40px #00d2ff, 0 0 60px #00c8ff;
+            opacity: 0.8;
+            animation: lightning-pulse 2s infinite alternate;
+            z-index: 1;
+        }
+        body::before { left: 40px; }
+        body::after { right: 40px; }
+
+        @keyframes lightning-pulse {
+            0% {
+                box-shadow: 0 0 15px #00d2ff, 0 0 30px #00c8ff;
+                opacity: 0.6;
+            }
+            100% {
+                box-shadow: 0 0 30px #00d2ff, 0 0 60px #00f0ff, 0 0 90px #00ffff;
+                opacity: 0.9;
+            }
+        }
+
+        /* Der originale blaue Kasten oben */
         .title-box {
-            border: 3px solid #00c8ff;
-            background-color: rgba(5, 7, 10, 0.8);
-            border-radius: 16px;
-            padding: 25px;
-            max-width: 600px;
-            margin: 0 auto 50px auto;
-            box-shadow: 0 0 20px rgba(0, 200, 255, 0.3), inset 0 0 15px rgba(0, 200, 255, 0.1);
+            border: 3px solid #00d2ff;
+            background-color: rgba(15, 22, 36, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 650px;
+            margin: 20px auto 60px auto;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4), inset 0 0 20px rgba(0, 210, 255, 0.15);
+            position: relative;
+            z-index: 2;
         }
 
         .title-box h1 {
+            font-family: 'Orbitron', sans-serif;
             margin: 0;
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: #00c8ff;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #00d2ff;
+            text-shadow: 0 0 12px rgba(0, 210, 255, 0.6);
         }
 
         .title-box p {
-            margin: 5px 0 0 0;
+            margin: 8px 0 0 0;
             color: #94a3b8;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            font-weight: 700;
         }
 
-        /* Das exakte Grid für deine 4 Spiele */
+        /* Die 4 Kacheln exakt nebeneinander aufgereiht */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            max-width: 1000px;
-            margin: 0 auto 50px auto;
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto 60px auto;
+            position: relative;
+            z-index: 2;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 950px) {
             .games-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        /* Die dunklen, cleanen Spiele-Karten */
+        /* Clean gestaltete, abgerundete Cyber-Karten */
         .game-card {
-            background-color: #11141a;
-            border: 1px solid #1e2530;
-            border-radius: 12px;
-            padding: 30px 20px;
+            background-color: #111622;
+            border: 2px solid #1e293b;
+            border-radius: 16px;
+            padding: 40px 20px;
             text-decoration: none;
             color: #ffffff;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
+        /* Leucht-Effekt beim Drüberfahren */
         .game-card:hover {
-            transform: translateY(-5px);
-            border-color: #00c8ff;
-            box-shadow: 0 8px 20px rgba(0, 200, 255, 0.15);
+            transform: translateY(-8px);
+            border-color: #00d2ff;
+            box-shadow: 0 12px 25px rgba(0, 210, 255, 0.3);
         }
 
         .game-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
+            transition: transform 0.2s;
         }
 
-        .game-card span:last-child {
-            font-weight: 600;
-            font-size: 1.1rem;
+        .game-card:hover .game-icon {
+            transform: scale(1.1);
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.15rem;
             letter-spacing: 0.5px;
         }
 
         /* Zurück-Button */
         .back-btn {
             display: inline-block;
-            background-color: #1e2530;
-            color: #94a3b8;
+            background-color: #1e293b;
+            color: #00d2ff;
+            border: 2px solid #00d2ff;
+            font-family: 'Orbitron', sans-serif;
             text-decoration: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
             transition: all 0.2s;
-            border: 1px solid transparent;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
         }
 
         .back-btn:hover {
-            background-color: #00c8ff;
-            color: #05070a;
-            font-weight: 700;
+            background-color: #00d2ff;
+            color: #0b0e14;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.5);
+            transform: scale(1.03);
         }
     </style>
 </head>
@@ -121,27 +165,27 @@
 
     <!-- STEFANS SPIELE Titelbox -->
     <div class="title-box">
-        <h1>🎮 STEFANS SPIELE</h1>
+        <h1>STEFANS SPIELE</h1>
         <p>Premium Game Collection</p>
     </div>
 
-    <!-- Deine 4 Spiele nebeneinander aufgereiht -->
+    <!-- Die 4 Spiele nebeneinander aufgereiht -->
     <div class="games-grid">
         <a href="/clicker" class="game-card">
             <span class="game-icon">⚔️</span>
-            <span>Monster Clicker</span>
+            <span class="game-title">Monster Clicker</span>
         </a>
         <a href="/shooter" class="game-card">
             <span class="game-icon">🚀</span>
-            <span>Space Shooter</span>
+            <span class="game-title">Space Shooter</span>
         </a>
         <a href="/racing" class="game-card">
             <span class="game-icon">🏎️</span>
-            <span>Turbo Racer</span>
+            <span class="game-title">Turbo Racer</span>
         </a>
         <a href="/jump" class="game-card">
             <span class="game-icon">🦘</span>
-            <span>Infinite Jump</span>
+            <span class="game-title">Infinite Jump</span>
         </a>
     </div>
 
